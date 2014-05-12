@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/new/icons">
+        <file>resources/plus.png</file>
+        <file>resources/minus.png</file>
+        <file>resources/logo.png</file>
+        <file>resources/open.png</file>
+        <file>resources/save.png</file>
+        <file>resources/new.png</file>
+        <file>resources/next.png</file>
+        <file>resources/previous.png</file>
+        <file>resources/auto.png</file>
+        <file>resources/ab.png</file>
+        <file>resources/ga.png</file>
+    </qresource>
+</RCC>
