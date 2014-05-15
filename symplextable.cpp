@@ -82,9 +82,34 @@ void SymplexTable::setValues(Factor **values, int row, int column, int _realValu
     realValueCount = _realValueCount;
 }
 
-Factor** SymplexTable::getValues()
+void SymplexTable::createVerticalHeader()
 {
-    return table;
+    VerticalHeader.clear();
+    for( int i = 0; i < rowCount-1; i++ )
+        VerticalHeader << columnCount+i;
+}
+
+void SymplexTable::createHorizontalHeader()
+{
+    HorizontalHeader.clear();
+    for( int i = 0; i < columnCount-1; i++ )
+        HorizontalHeader << i+1;
+}
+
+void SymplexTable::createVerticalHeader(QList<int> selectedValues)
+{
+    VerticalHeader.clear();
+    for( int i = 0; i < selectedValues.length(); i++ )
+        if( selectedValues[i] == 1 )
+            VerticalHeader << i+1;
+}
+
+void SymplexTable::createHorizontalHeader(QList<int> selectedValues)
+{
+    HorizontalHeader.clear();
+    for( int i = 0; i < selectedValues.length(); i++ )
+        if( selectedValues[i] == 0 )
+            HorizontalHeader << i+1;
 }
 
 int SymplexTable::isSolution()
@@ -123,9 +148,17 @@ int SymplexTable::isSolution()
 
 bool SymplexTable::isEndOfArtificalBasis()
 {
-    //qDebug() << "real ValueCount" << realValueCount;
     for(QList<int>::iterator i = VerticalHeader.begin(); i != VerticalHeader.end(); i++)
         if( *i > realValueCount )
+            return false;
+
+    return true;
+}
+
+bool SymplexTable::checkPermissibleSolution()
+{
+    for( int i = 0; i < rowCount-1; i++ )
+        if( table[i][columnCount-1] < 0 )
             return false;
 
     return true;
@@ -199,7 +232,6 @@ QList<int> SymplexTable::searchSupportElementsForArtificalBasis()
             break;
         }
 
-    //qDebug() << elements;
     return elements;
 }
 
@@ -227,17 +259,10 @@ void SymplexTable::nextStep(int rowIndex, int columnIndex)
 
     table[rowIndex][columnIndex] = table[rowIndex][columnIndex] ^ -1;
 
-    //qDebug() << "Before" << VerticalHeader << HorizontalHeader;
-
     switchHeaderLabels(rowIndex, columnIndex);
 
-    //qDebug() << "After" << VerticalHeader << HorizontalHeader;
-
-    //qDebug() << "columnIndex" << columnIndex;
     if( HorizontalHeader[columnIndex] > realValueCount )
         deleteColumn(columnIndex);
-
-    //qDebug() << "After After" << VerticalHeader << HorizontalHeader;
 }
 
 bool SymplexTable::zeroLastRow()
@@ -257,16 +282,21 @@ void SymplexTable::computeLastRow(Factor *func)
             table[rowCount-1][i] = func[ HorizontalHeader[i] - 1 ];
 
         for( int j = 0; j < rowCount-1; j++ )
-            table[rowCount-1][i] = table[rowCount-1][i] -
-                    table[j][i] * func[ VerticalHeader[j] - 1 ];
+            if( i != columnCount-1 )
+                table[rowCount-1][i] = table[rowCount-1][i] -
+                        table[j][i] * func[ VerticalHeader[j] - 1 ];
+            else
+                table[rowCount-1][i] = table[rowCount-1][i] +
+                        table[j][i] * func[ VerticalHeader[j] - 1 ];
     }
+
+    table[rowCount-1][columnCount-1] = -table[rowCount-1][columnCount-1];
 }
 
 void SymplexTable::operator = (const SymplexTable &tmp)
 {
-    //qDebug() << "111";
     deleteTable();
-    //return SymplexTable(tmp);
+
     VerticalHeader = tmp.VerticalHeader;
     HorizontalHeader = tmp.HorizontalHeader;
 
@@ -291,11 +321,6 @@ QString SymplexTable::getPointSolution()
 
     for( int i = 0; i < VerticalHeader.length(); i++ )
         pointSolution[VerticalHeader[i]-1] = table[i][columnCount - 1];
-
-    /*qDebug() << pointSolution[0].toString();
-    qDebug() << pointSolution[1].toString();
-    qDebug() << pointSolution[2].toString();
-    qDebug() << pointSolution[3].toString();*/
 
     QString sol = "( ";
     int i;

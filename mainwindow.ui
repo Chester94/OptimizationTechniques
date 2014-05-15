@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>No name</string>
+   <string>&lt;NULL&gt;</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">

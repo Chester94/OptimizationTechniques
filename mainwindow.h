@@ -7,6 +7,7 @@
 #include <QMessageBox>
 
 #include "solution.h"
+#include "choicevariables.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,15 @@ public:
 private:
     bool checkValue(int rowCount, int columnCount, Factor **values);
     int directionSolution();
+
+    void MessengeBoxFunctionWithoutValues(Factor val);
+    void MessengeBoxImpossibleCondition(int num);
+    void MessengeBoxZeroCondition(int num);
+    void MessengeBoxErrorGaussCountValues();
+
+    bool checkGaussValueCount(QList<int> selVal);
+
+    QString checkPathToSaveFile(QString path);
 
 private slots:
     void on_addRow_clicked();

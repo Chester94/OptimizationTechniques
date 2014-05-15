@@ -25,38 +25,6 @@ Factor::Factor(qint64 number)
 
 Factor::Factor(QString str)
 {
-    /*QString rate = "";
-    int i = 0;
-
-    if( str[i] == '-' )
-        rate.append(str[i++]);
-
-    while( str[i].isDigit() )
-        rate.append(str[i++]);
-
-    numerator = rate.toInt();
-    denominator = 1;
-
-    if( str[i++] == '/' )
-    {
-        rate.clear();
-
-        while( str[i].isDigit() )
-            rate.append(str[i++]);
-
-        denominator = rate.toInt();
-    }
-
-    Reducing();*/
-
-    /*for( int i = 0; i < 5; i++ )
-    {
-        number *= 10;
-        denominator *= 10;
-    }
-
-    numerator = (qint64)number;*/
-
     RegExpString Exp;
 
     QRegExp Int(Exp.INT());
@@ -81,6 +49,7 @@ Factor::Factor(QString str)
     if(Double.exactMatch(str))
     {
         double num = str.toDouble();
+        denominator = 1;
 
         for( int i = 0; i < 5; i++ )
         {

@@ -7,9 +7,9 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    /*Factor t("123/1234");
+    /*Factor t("1.6");
 
-    qDebug() << t.toString() << (t^-1).toString();*/
+    qDebug() << t.toString();*/
 
     return a.exec();
 }

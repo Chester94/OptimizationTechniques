@@ -5,13 +5,6 @@ TableWidget::TableWidget(QWidget *parent)
     setParent(parent);
     setItemDelegate(new MyDelegat());
 
-    /*setColumnCount(3);
-    setRowCount(3);
-
-    setZeroToAllCell();
-
-    setMyVerticalHeader();
-    setMyHorizontalHeader();*/
     setDimension(3, 4);
 
     setMyVerticalHeader();
@@ -24,20 +17,15 @@ void TableWidget::setDimension(int row, int column)
     setRowCount(row);
 
     setZeroToAllCell();
-
-    /*VerticalHeader = createVerticalHeader();
-    HorizontalHeader = createHorizontalHeader();
-
-    setVerticalHeaderLabels(VerticalHeader);
-    setHorizontalHeaderLabels(HorizontalHeader);*/
 }
 
 void TableWidget::setValues(int row, int column, Factor **values)
 {
-    setColumnCount(column);
+    /*setColumnCount(column);
     setRowCount(row);
 
-    setZeroToAllCell();
+    setZeroToAllCell();*/
+    setDimension(row, column);
 
     for( int i = 0; i < row; i++ )
         for( int j = 0; j < column; j++ )
@@ -54,7 +42,6 @@ Factor** TableWidget::getValues()
 
     for( int i = 0; i < rowCount(); i++ )
         for( int j = 0; j < columnCount(); j++ )
-            //item(i, j)->setText( values[i][j].toString() );
             values[i][j] = Factor(item(i, j)->text());
 
     return values;
@@ -67,56 +54,8 @@ void TableWidget::setZeroToAllCell()
         {
             model()->setData( model()->index(i, j), QVariant(0) );
             item(i, j)->setText("0");
-            /*item(i, j)->setFlags(Qt::ItemIsEnabled);
-
-            if(i==j)
-            {
-                item(i, j)->setFlags(item(i, j)->flags() | Qt::ItemIsSelectable);
-                //item(i, j)->setFlags(Qt::ItemIsSelectable || Qt::ItemIsEditable);
-                item(i, j)->setBackgroundColor(Qt::green);
-            }*/
         }
 }
-
-/*QStringList TableWidget::createMyVerticalHeader(QString nameVar)
-{
-    QStringList verHeader;
-
-    verHeader << "f(" + nameVar + ")";
-    for(int i = 1; i < rowCount(); i++)
-        verHeader << QString("c%1").arg(i);
-
-    //verHeader << "x1" << "x2" << "x3" << "f";
-
-    return verHeader;
-}
-
-QStringList TableWidget::createMyHorizontalHeader(QString nameVar)
-{
-    QStringList horHeader;
-
-    for(int i = 0; i < columnCount()-1; i++)
-        horHeader << nameVar + QString("%1").arg(i+1);
-    horHeader << "const";
-
-    //horHeader << "x4" << "x5" << "const";
-
-    return horHeader;
-}
-
-QStringList TableWidget::createMyVerticalHeaderForArtificalBasis(QString nameVar)
-{
-    QStringList verHeader;
-
-    for(int i = 0; i < rowCount()-1; i++)
-        verHeader << nameVar + QString("%1").arg(i+1);
-
-    verHeader << "*";
-
-    //verHeader << "x1" << "x2" << "x3" << "f";
-
-    return verHeader;
-}*/
 
 void TableWidget::setMyVerticalHeader()
 {
@@ -162,13 +101,6 @@ void TableWidget::setMyHorizontalHeader(QList<int> val)
     setHorizontalHeaderLabels( horHeader );
 }
 
-/*void TableWidget::setMyVerticalHeaderForArtificalBasis(QString nameVar)
-{
-    VerticalHeader = createMyVerticalHeaderForArtificalBasis(nameVar);
-
-    setVerticalHeaderLabels(VerticalHeader);
-}*/
-
 void TableWidget::addRow()
 {
     if(rowCount() > 16)
@@ -184,7 +116,7 @@ void TableWidget::addRow()
 
 void TableWidget::deleteRow()
 {
-    if(rowCount() < 2)
+    if(rowCount() < 3)
         return;
 
     setRowCount(rowCount() - 1);
@@ -204,7 +136,7 @@ void TableWidget::addColumn()
 
 void TableWidget::deleteColumn()
 {
-    if(columnCount() < 3)
+    if(columnCount() < 4)
         return;
 
     if( rowCount() >= columnCount() - 1 )
@@ -215,27 +147,8 @@ void TableWidget::deleteColumn()
     setMyHorizontalHeader();
 }
 
-/*void TableWidget::switchHeaderLabels(int verHeadIndex, int horHeadIndex)
-{
-    QString ver = VerticalHeader[verHeadIndex];
-    QString hor = HorizontalHeader[horHeadIndex];
-
-    VerticalHeader[verHeadIndex] = hor;
-    HorizontalHeader[horHeadIndex] = ver;
-
-    setVerticalHeaderLabels(VerticalHeader);
-    setHorizontalHeaderLabels(HorizontalHeader);
-}*/
-
 void TableWidget::selectSupportElemtnts(QList<int> supEl)
 {
-    /*for(int i = 0; i < rowCount(); i++)
-        for(int j = 0; j < columnCount(); j++)
-        {
-            item(i, j)->setFlags(Qt::ItemIsEnabled);
-            item(i, j)->setBackgroundColor(Qt::white);
-        }*/
-
     clearAllocation();
 
     if(supEl.length() == 0)
@@ -261,4 +174,32 @@ void TableWidget::clearAllocation()
         }
 
     clearSelection();
+}
+
+void TableWidget::toGaussMethod(int column)
+{
+    setDimension(1, column);
+
+    for( int i = 0; i < column; i++ )
+    {
+        item(0, i)->setCheckState(Qt::Unchecked);
+        item(0, i)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
+        item(0, i)->setText("");
+        setColumnWidth(i, 40);
+    }
+
+    setRowHeight(0, 47);
+}
+
+QList<int> TableWidget::selectedValues()
+{
+    QList<int> selVal;
+
+    for( int i = 0; i < columnCount(); i++ )
+        if(item(0, i)->checkState() == Qt::Checked)
+            selVal.append(1);
+        else
+            selVal.append(0);
+
+    return selVal;
 }

@@ -31,7 +31,7 @@ public:
     SymplexTable(const SymplexTable &tmp);
 
     void setValues(Factor **values, int row, int column, int _realValueCount);
-    Factor** getValues();
+    Factor** getValues() { return table; }
 
     int getRowCount() {return rowCount;}
     int getColumnCount() {return columnCount;}
@@ -42,8 +42,16 @@ public:
     void setVerticalHeader(QList<int> verHeader) { VerticalHeader = verHeader; }
     void setHorizontalHeader(QList<int> horHeader) { HorizontalHeader = horHeader; }
 
+    void createVerticalHeader();
+    void createHorizontalHeader();
+
+    void createVerticalHeader(QList<int> selectedValues);
+    void createHorizontalHeader(QList<int> selectedValues);
+
     int isSolution();
     bool isEndOfArtificalBasis();
+
+    bool checkPermissibleSolution();
 
     QList<int> searchSupportElements();
     QList<int> searchSupportElementsForArtificalBasis();
@@ -57,6 +65,8 @@ public:
 
     Factor getSolution(Factor *func) { return func[realValueCount] - table[rowCount-1][columnCount-1]; }
     QString getPointSolution();
+
+    Factor* operator [] (int n) { return table[n]; }
 };
 
 #endif // SYMPLEXTABLE_H

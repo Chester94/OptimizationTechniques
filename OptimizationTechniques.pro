@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     tablewidget.cpp \
     symplextable.cpp \
     regexpstring.cpp \
-    solution.cpp
+    solution.cpp \
+    choicevariables.cpp
 
 HEADERS  += mainwindow.h \
     factor.h \
@@ -27,10 +28,12 @@ HEADERS  += mainwindow.h \
     tablewidget.h \
     symplextable.h \
     regexpstring.h \
-    solution.h
+    solution.h \
+    choicevariables.h
 
 FORMS    += mainwindow.ui \
-    solution.ui
+    solution.ui \
+    choicevariables.ui
 
 RESOURCES += \
     icons.qrc
