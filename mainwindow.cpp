@@ -190,7 +190,9 @@ void MainWindow::openObjective(QString path)
         delete values;
     }
 
-    this->setWindowTitle(applicationName + " - [ " + path + " ]");
+    int pos = path.lastIndexOf("/") + 1;
+    tmp = path.mid(pos, path.length() - pos );
+    this->setWindowTitle(applicationName + " - [ " + tmp + " ]");
 }
 
 void MainWindow::saveObjective(QString &path)
@@ -215,7 +217,9 @@ void MainWindow::saveObjective(QString &path)
 
     output.close();
 
-    this->setWindowTitle(applicationName + " - [ " + path + " ]");
+    int pos = path.lastIndexOf("/") + 1;
+    QString tmp = path.mid(pos, path.length() - pos );
+    this->setWindowTitle(applicationName + " - [ " + tmp + " ]");
 }
 
 void MainWindow::on_addRow_clicked()
