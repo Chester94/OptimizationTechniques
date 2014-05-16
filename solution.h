@@ -54,6 +54,8 @@ private:
 
     Factor **transformationAfterGauss(int rowCount, int columnCount, Factor **val);
 
+    QString createNewWindowTitle();
+
 public:
     explicit Solution(QWidget *parent = 0);
     ~Solution();

@@ -86,6 +86,8 @@ void Solution::pathSelection()
 
         ui->tableView->clearAllocation();
 
+        this->setWindowTitle(createNewWindowTitle());
+
         switch (symTable.isSolution())
         {
         case REAL_SOLUTION :
@@ -115,6 +117,8 @@ void Solution::pathSelection()
             MessengeBoxError();
             this->close();
         }
+
+        this->setWindowTitle("Искусственный базис");
     }
 }
 
@@ -363,7 +367,17 @@ Factor** Solution::transformationAfterGauss(int rowCount, int columnCount, Facto
     deleteValues(val, rowCount);
 
     return values;
+}
 
+QString Solution::createNewWindowTitle()
+{
+    Factor sol = symTable.getSolution(func);
+
+    if( direction == MAX )
+        sol = -sol;
+
+    return "Текущая точка " + symTable.getPointSolution() +
+            ", значение функции = " + sol.toString();
 }
 
 void Solution::setParametrsArtificalBasis(int rowCount, int columnCount, Factor **values, int directionSolution)
