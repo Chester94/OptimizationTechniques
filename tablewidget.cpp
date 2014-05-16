@@ -21,10 +21,6 @@ void TableWidget::setDimension(int row, int column)
 
 void TableWidget::setValues(int row, int column, Factor **values)
 {
-    /*setColumnCount(column);
-    setRowCount(row);
-
-    setZeroToAllCell();*/
     setDimension(row, column);
 
     for( int i = 0; i < row; i++ )
@@ -188,7 +184,9 @@ void TableWidget::toGaussMethod(int column)
         setColumnWidth(i, 40);
     }
 
-    setRowHeight(0, 47);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+    setRowHeight(0, 30);
 }
 
 QList<int> TableWidget::selectedValues()

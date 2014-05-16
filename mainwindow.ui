@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>&lt;NULL&gt;</string>
+   <string>Black Fire v.1.00</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
@@ -330,12 +330,12 @@
            </property>
            <property name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/new/icons/resources/ab.png</normaloff>:/new/icons/resources/ab.png</iconset>
+             <normaloff>:/new/icons/resources/artBas.png</normaloff>:/new/icons/resources/artBas.png</iconset>
            </property>
            <property name="iconSize">
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>35</width>
+             <height>35</height>
             </size>
            </property>
           </widget>
@@ -362,7 +362,7 @@
            </property>
            <property name="icon">
             <iconset resource="icons.qrc">
-             <normaloff>:/new/icons/resources/ga.png</normaloff>:/new/icons/resources/ga.png</iconset>
+             <normaloff>:/new/icons/resources/gauss.png</normaloff>:/new/icons/resources/gauss.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -395,6 +395,9 @@
     <addaction name="newAction"/>
     <addaction name="openAction"/>
     <addaction name="saveAction"/>
+    <addaction name="saveAsAction"/>
+    <addaction name="separator"/>
+    <addaction name="exit"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -433,6 +436,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="saveAsAction">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/new/icons/resources/saveAs.png</normaloff>:/new/icons/resources/saveAs.png</iconset>
+   </property>
+   <property name="text">
+    <string>Сохранить задачу как</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="exit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/new/icons/resources/exit.png</normaloff>:/new/icons/resources/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Выход</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
  </widget>

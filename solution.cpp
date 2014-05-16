@@ -27,48 +27,6 @@ void Solution::trainingNextStep()
     ui->tableView->setValues(symTable.getRowCount(), symTable.getColumnCount(),
                              symTable.getValues());
 
-    /*if( symTable.isEndOfArtificalBasis() )
-    {
-        if( symTable.zeroLastRow() )
-        {
-            symTable.computeLastRow(func);
-
-            ui->tableView->setValues(symTable.getRowCount(), symTable.getColumnCount(),
-                                     symTable.getValues());
-        }
-
-        ui->tableView->clearAllocation();
-
-        switch (symTable.isSolution())
-        {
-        case REAL_SOLUTION :
-            ui->nextStep->setEnabled(false);
-            MessageBoxRealSolution();
-            break;
-
-        case INF_SOLUTION :
-            ui->nextStep->setEnabled(false);
-            MessageBoxInfSolution();
-            break;
-
-        case NOT_SOLUTION :
-            ui->nextStep->setEnabled(true);
-            supElements = symTable.searchSupportElements();
-            ui->tableView->selectSupportElemtnts(supElements);
-            break;
-        }
-    }
-    else
-    {
-        supElements = symTable.searchSupportElementsForArtificalBasis();
-        ui->tableView->selectSupportElemtnts(supElements);
-
-        if(supElements.length() == 0)
-        {
-            MessengeBoxError();
-            this->close();
-        }
-    }*/
     pathSelection();
 }
 
@@ -388,27 +346,6 @@ void Solution::setParametrsArtificalBasis(int rowCount, int columnCount, Factor 
 
     setFunc(columnCount, values);
 
-// ***********************************************************************
-    /*Factor **new_values = new Factor* [rowCount];
-
-    for( int i = 0; i < rowCount; i++ )
-        new_values[i] = new Factor [columnCount];
-
-    for( int i = 0; i < rowCount-1; i++ )
-        for( int j = 0; j < columnCount; j++ )
-            new_values[i][j] = values[i+1][j];
-
-    CheckCondition(rowCount, columnCount, new_values);
-
-    for( int i = 0; i < columnCount; i++ )
-    {
-        for( int j = 0; j < rowCount-1; j++ )
-            new_values[rowCount-1][i] = new_values[rowCount-1][i] + new_values[j][i];
-
-        new_values[rowCount-1][i] = -new_values[rowCount-1][i];
-    }*/
-// ***********************************************************************
-
     symTable.setValues(setCondition(rowCount, columnCount, values),
                        rowCount, columnCount, columnCount-1);
 
@@ -423,8 +360,6 @@ void Solution::setParametrsArtificalBasis(int rowCount, int columnCount, Factor 
     ui->tableView->setValues(symTable.getRowCount(), symTable.getColumnCount(),
                               symTable.getValues());
 
-    /*supElements = symTable.searchSupportElementsForArtificalBasis();
-    ui->tableView->selectSupportElemtnts(supElements);*/
     if(allVeryBad)
         return;
 

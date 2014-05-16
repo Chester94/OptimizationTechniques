@@ -36,11 +36,4 @@ void ChoiceVariables::setColumnCount(int columnCount)
 void ChoiceVariables::on_buttonBox_accepted()
 {
     selectedValues = ui->tableView->selectedValues();
-
-    /*int sum = 0;
-    for( int i = 0; i < selectedValues.length(); i++ )
-        sum += selectedValues[i];
-
-    if( sum = conditionCount )
-        accept();*/
 }

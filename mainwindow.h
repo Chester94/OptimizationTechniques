@@ -22,6 +22,9 @@ public:
     ~MainWindow();
 
 private:
+    QString applicationName;
+    QString path;
+
     bool checkValue(int rowCount, int columnCount, Factor **values);
     int directionSolution();
 
@@ -29,10 +32,15 @@ private:
     void MessengeBoxImpossibleCondition(int num);
     void MessengeBoxZeroCondition(int num);
     void MessengeBoxErrorGaussCountValues();
+    void MessengeBoxErrorPath();
 
     bool checkGaussValueCount(QList<int> selVal);
 
-    QString checkPathToSaveFile(QString path);
+    bool checkPathToOpenFile(QString pathToFile);
+    QString checkPathToSaveFile(QString &pathToFile);
+
+    void openObjective(QString path);
+    void saveObjective(QString &path);
 
 private slots:
     void on_addRow_clicked();
@@ -52,6 +60,10 @@ private slots:
     void on_artificialBasis_clicked();
 
     void on_gauss_clicked();
+
+    void on_saveAsAction_triggered();
+
+    void on_exit_triggered();
 
 private:
     Ui::MainWindow *ui;

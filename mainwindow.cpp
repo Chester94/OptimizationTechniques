@@ -5,6 +5,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    applicationName = "Black Fire v.1.01";
+    path = "";
     ui->setupUi(this);
     on_newAction_triggered();
 }
@@ -24,7 +26,6 @@ bool MainWindow::checkValue(int rowCount, int columnCount, Factor **values)
     if( f )
     {
         MessengeBoxFunctionWithoutValues(values[0][columnCount-1]);
-
         return false;
     }
 
@@ -97,6 +98,15 @@ void MainWindow::MessengeBoxErrorGaussCountValues()
     delete msgBox;
 }
 
+void MainWindow::MessengeBoxErrorPath()
+{
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Critical, "Ошибка расширения файла",
+                                          "Файл должен иметь расширение .mo");
+    msgBox->setWindowIcon(QIcon("resources\\logo.png"));
+    msgBox->exec();
+    delete msgBox;
+}
+
 bool MainWindow::checkGaussValueCount(QList<int> selVal)
 {
     int sum = 0;
@@ -112,15 +122,100 @@ bool MainWindow::checkGaussValueCount(QList<int> selVal)
     }
 }
 
-QString MainWindow::checkPathToSaveFile(QString path)
+bool MainWindow::checkPathToOpenFile(QString pathToFile)
 {
-    if(path.length() < 3)
-        return path;
+    if(pathToFile.length() < 3)
+        return false;
 
-    if( path.mid(path.length()-3, 3) != ".mo" )
-        path += ".mo";
+    if( pathToFile.mid( pathToFile.length()-3, 3) != ".mo" )
+        return false;
 
-    return path;
+    return true;
+}
+
+QString MainWindow::checkPathToSaveFile(QString &pathToFile)
+{
+    if(pathToFile.length() < 3)
+        return pathToFile;
+
+    if( pathToFile.mid( pathToFile.length()-3, 3) != ".mo" )
+        pathToFile += ".mo";
+
+    return pathToFile;
+}
+
+void MainWindow::openObjective(QString path)
+{
+    if( !checkPathToOpenFile(path) )
+    {
+        MessengeBoxErrorPath();
+        return;
+    }
+    QFile input(path);
+    input.open( QIODevice::ReadOnly );
+
+    QTextStream in(&input);
+
+    int directionSolution;
+    int rowCount;
+    int columnCount;
+
+    in >> directionSolution >> rowCount >> columnCount;
+
+    ui->min->setChecked(!directionSolution);
+    ui->max->setChecked(directionSolution);
+
+    Factor **values = new Factor* [rowCount];
+    for(int i = 0; i < rowCount; i++)
+        values[i] = new Factor [columnCount];
+
+    QString tmp;
+
+    for( int i = 0; i < rowCount; i++ )
+        for( int j = 0; j < columnCount; j++ )
+        {
+            in >> tmp;
+            values[i][j] = Factor(tmp);
+        }
+
+    ui->tableInput->setValues(rowCount, columnCount, values);
+    ui->tableInput->setMyVerticalHeader();
+    ui->tableInput->setMyHorizontalHeader();
+
+    if(values)
+    {
+        for( int i = 0; i < rowCount; i++ )
+            delete values[i];
+
+        delete values;
+    }
+
+    this->setWindowTitle(applicationName + " - [ " + path + " ]");
+}
+
+void MainWindow::saveObjective(QString &path)
+{
+    path = checkPathToSaveFile(path);
+    QFile output(path);
+    output.open( QIODevice::WriteOnly );
+
+    QTextStream out(&output);
+
+    int directionSolution = ui->max->isChecked();
+    int rowCount = ui->tableInput->rowCount();
+    int columnCount = ui->tableInput->columnCount();
+
+    Factor **value = ui->tableInput->getValues();
+
+    out << directionSolution << " " << rowCount << " " << columnCount;
+
+    for( int i = 0; i < rowCount; i++ )
+        for( int j = 0; j < columnCount; j++)
+            out << endl << value[i][j].toString();
+
+    output.close();
+
+    this->setWindowTitle(applicationName + " - [ " + path + " ]");
 }
 
 void MainWindow::on_addRow_clicked()
@@ -209,84 +304,35 @@ void MainWindow::on_newAction_triggered()
 
     ui->min->setChecked(true);
 
-    this->setWindowTitle("<null>");
+    this->setWindowTitle(applicationName);
+    path = "";
 }
 
 void MainWindow::on_openAction_triggered()
 {
-    QString path = QFileDialog::getOpenFileName( this, tr("Open File"), "D:\\", tr("*.mo") );
+    path = QFileDialog::getOpenFileName( this, tr("Открыть задачу"), "D:\\", tr("*.mo") );
 
     if( path != "" )
-    {
-        QFile input(path);
-        input.open( QIODevice::ReadOnly );
-
-        QTextStream in(&input);
-
-        int directionSolution;
-        int rowCount;
-        int columnCount;
-
-        in >> directionSolution >> rowCount >> columnCount;
-
-        ui->min->setChecked(!directionSolution);
-        ui->max->setChecked(directionSolution);
-
-        Factor **values = new Factor* [rowCount];
-        for(int i = 0; i < rowCount; i++)
-            values[i] = new Factor [columnCount];
-
-        QString tmp;
-
-        for( int i = 0; i < rowCount; i++ )
-            for( int j = 0; j < columnCount; j++ )
-            {
-                in >> tmp;
-                values[i][j] = Factor(tmp);
-            }
-
-        ui->tableInput->setValues(rowCount, columnCount, values);
-        ui->tableInput->setMyVerticalHeader();
-        ui->tableInput->setMyHorizontalHeader();
-
-        if(values)
-        {
-            for( int i = 0; i < rowCount; i++ )
-                delete values[i];
-
-            delete values;
-        }
-
-        this->setWindowTitle(path);
-    }
+        openObjective(path);
 }
 
 void MainWindow::on_saveAction_triggered()
 {
-    QString path = QFileDialog::getSaveFileName( this, tr("Create File"), "D:\\", tr("*.mo") );
+    if( path != "" )
+        saveObjective(path);
+    else
+        on_saveAsAction_triggered();
+}
+
+void MainWindow::on_saveAsAction_triggered()
+{
+    path = QFileDialog::getSaveFileName( this, tr("Сохранить задачу как"), "D:\\", tr("*.mo") );
 
     if( path != "" )
-    {
-        path = checkPathToSaveFile(path);
-        QFile output(path);
-        output.open( QIODevice::WriteOnly );
+        saveObjective(path);
+}
 
-        QTextStream out(&output);
-
-        int directionSolution = ui->max->isChecked();
-        int rowCount = ui->tableInput->rowCount();
-        int columnCount = ui->tableInput->columnCount();
-
-        Factor **value = ui->tableInput->getValues();
-
-        out << directionSolution << " " << rowCount << " " << columnCount;
-
-        for( int i = 0; i < rowCount; i++ )
-            for( int j = 0; j < columnCount; j++)
-                out << endl << value[i][j].toString();
-
-        output.close();
-
-        this->setWindowTitle(path);
-    }
+void MainWindow::on_exit_triggered()
+{
+    this->close();
 }
