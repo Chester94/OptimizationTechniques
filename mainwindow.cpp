@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    applicationName = "Black Fire v.1.01";
+    applicationName = "Black Fire v.1.03";
     path = "";
     ui->setupUi(this);
     on_newAction_triggered();

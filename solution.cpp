@@ -54,6 +54,7 @@ void Solution::pathSelection()
             break;
 
         case INF_SOLUTION :
+            this->setWindowTitle("Ребро в бесконечность");
             ui->nextStep->setEnabled(false);
             MessageBoxInfSolution();
             break;
